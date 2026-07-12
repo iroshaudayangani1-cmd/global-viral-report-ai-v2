@@ -22,4 +22,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Python
-        run: python scripts/news_finder.py
+        run: python scripts/rss_reader.py
