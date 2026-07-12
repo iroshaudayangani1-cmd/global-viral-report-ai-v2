@@ -21,10 +21,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run RSS Reader
-        run: python scripts/rss_reader.py
-      - name: Upload Headlines
-        uses: actions/upload-artifact@v4
-        with:
-          name: headlines
-          path: output/news/headlines.json
+      - name: Check Secret
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then
+            echo "❌ SECRET NOT FOUND"
+            exit 1
+          else
+            echo "✅ SECRET FOUND"
+            echo "Length: ${#GEMINI_API_KEY}"
+          fi
+
+      - name: Run Gemini Test
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/gemini_test.py
