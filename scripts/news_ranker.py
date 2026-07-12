@@ -25,9 +25,7 @@ news = news[:20]
 headlines = []
 
 for i, article in enumerate(news, start=1):
-    headlines.append(
-        f"{i}. {article['title']}"
-    )
+    headlines.append(f"{i}. {article['title']}")
 
 prompt = f"""
 You are an expert viral news editor.
@@ -36,7 +34,6 @@ Your task is to choose the ONE news story with the highest viral potential
 for readers in the USA and UK.
 
 Consider:
-
 - Viral potential
 - Public interest
 - Search demand
@@ -48,9 +45,9 @@ Return ONLY valid JSON.
 Example:
 
 {{
-    "selected_story": 7,
-    "score": 97,
-    "reason": "This topic has strong global interest and high SEO potential."
+  "selected_story": 7,
+  "score": 97,
+  "reason": "This topic has strong global interest and high SEO potential."
 }}
 
 Headlines:
@@ -59,11 +56,17 @@ Headlines:
 """
 
 response = client.models.generate_content(
-    model="gemini-2.5-flash-lite",
-    contents=prompt
+    model="gemini-2.5-flash",
+    contents=prompt,
 )
 
-result = json.loads(response.text)
+# Clean possible markdown
+text = response.text.strip()
+
+if text.startswith("```json"):
+    text = text.replace("```json", "").replace("```", "").strip()
+
+result = json.loads(text)
 
 story_number = result["selected_story"]
 
