@@ -22,4 +22,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run RSS Reader
-  run: python scripts/rss_reader.py
+        run: python scripts/rss_reader.py
