@@ -43,3 +43,13 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/gemini_test.py
+- name: Collect News
+  run: python scripts/news_collector.py
+
+- name: Upload News JSON
+  uses: actions/upload-artifact@v4
+  with:
+    name: collected-news
+    path: output/news/news.json
+
+  
