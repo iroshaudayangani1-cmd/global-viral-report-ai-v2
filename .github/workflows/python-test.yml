@@ -49,6 +49,11 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/news_ranker.py
 
+      - name: Write Article
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/article_writer.py
+
       - name: Upload Collected News
         uses: actions/upload-artifact@v4
         with:
@@ -60,3 +65,9 @@ jobs:
         with:
           name: ranked-story
           path: output/ranked/best_story.json
+
+      - name: Upload Article
+        uses: actions/upload-artifact@v4
+        with:
+          name: article
+          path: output/article/article.json
