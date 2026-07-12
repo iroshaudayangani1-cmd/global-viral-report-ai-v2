@@ -23,3 +23,8 @@ jobs:
 
       - name: Run RSS Reader
         run: python scripts/rss_reader.py
+      - name: Upload Headlines
+        uses: actions/upload-artifact@v4
+        with:
+          name: headlines
+          path: output/news/headlines.json
