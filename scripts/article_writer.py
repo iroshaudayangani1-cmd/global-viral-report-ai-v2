@@ -71,8 +71,8 @@ Example:
 print(f"Using model: {MODEL}")
 
 response = client.models.generate_content(
-    model=MODEL,
-    contents=prompt
+    model="gemini-3.5-flash",
+    contents=prompt,
 )
 
 text = response.text.strip()
