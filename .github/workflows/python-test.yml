@@ -27,10 +27,10 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ -z "$GEMINI_API_KEY" ]; then
-            echo "❌ SECRET NOT FOUND"
+            echo "SECRET NOT FOUND"
             exit 1
           else
-            echo "✅ SECRET FOUND"
+            echo "SECRET FOUND"
           fi
 
       - name: Show Repository Structure
@@ -41,7 +41,22 @@ jobs:
           echo "===== SCRIPTS ====="
           ls -la scripts
 
-      - name: List Gemini Models
+      - name: Collect News
+        run: python scripts/news_collector.py
+
+      - name: Rank News
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/list_models.py
+        run: python scripts/news_ranker.py
+
+      - name: Upload Collected News
+        uses: actions/upload-artifact@v4
+        with:
+          name: collected-news
+          path: output/news/news.json
+
+      - name: Upload Ranked Story
+        uses: actions/upload-artifact@v4
+        with:
+          name: ranked-story
+          path: output/ranked/best_story.json
