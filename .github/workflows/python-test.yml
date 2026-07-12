@@ -33,6 +33,14 @@ jobs:
             echo "SECRET FOUND"
           fi
 
+      - name: Show Repository Structure
+        run: |
+          echo "===== ROOT ====="
+          ls -la
+          echo ""
+          echo "===== SCRIPTS ====="
+          ls -la scripts
+
       - name: Collect News
         run: python scripts/news_collector.py
 
