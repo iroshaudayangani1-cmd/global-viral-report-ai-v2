@@ -1,29 +1,45 @@
 import feedparser
+import json
+import os
 
-# Trusted RSS feeds
 RSS_FEEDS = {
     "Google News": "https://news.google.com/rss",
-    "Reuters World": "https://feeds.reuters.com/reuters/worldNews",
-    "BBC World": "http://feeds.bbci.co.uk/news/world/rss.xml"
+    "BBC World": "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "CNN": "http://rss.cnn.com/rss/edition.rss"
 }
 
-def fetch_news():
-    print("=" * 60)
-    print("LATEST NEWS HEADLINES")
-    print("=" * 60)
+all_news = []
 
-    for source, url in RSS_FEEDS.items():
-        print(f"\nSource: {source}")
+for source, url in RSS_FEEDS.items():
 
-        feed = feedparser.parse(url)
+    print(f"Reading {source}...")
 
-        if not feed.entries:
-            print("No news found.")
-            continue
+    feed = feedparser.parse(url)
 
-        # Show the first 5 headlines
-        for i, entry in enumerate(feed.entries[:5], start=1):
-            print(f"{i}. {entry.title}")
+    for article in feed.entries[:10]:
 
-if __name__ == "__main__":
-    fetch_news()
+        all_news.append({
+            "source": source,
+            "title": article.title,
+            "link": article.link
+        })
+
+os.makedirs("output/news", exist_ok=True)
+
+with open(
+    "output/news/headlines.json",
+    "w",
+    encoding="utf-8"
+) as f:
+
+    json.dump(
+        all_news,
+        f,
+        indent=4,
+        ensure_ascii=False
+    )
+
+print()
+print("=" * 50)
+print(f"Collected {len(all_news)} headlines.")
+print("=" * 50)
