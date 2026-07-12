@@ -41,28 +41,7 @@ jobs:
           echo "===== SCRIPTS ====="
           ls -la scripts
 
-      - name: Show news_ranker.py
-        run: |
-          echo "========== news_ranker.py =========="
-          cat scripts/news_ranker.py
-          echo "===================================="
-
-      - name: Collect News
-        run: python scripts/news_collector.py
-
-      - name: Rank News
+      - name: List Gemini Models
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/news_ranker.py
-
-      - name: Upload Collected News
-        uses: actions/upload-artifact@v4
-        with:
-          name: collected-news
-          path: output/news/news.json
-
-      - name: Upload Ranked Story
-        uses: actions/upload-artifact@v4
-        with:
-          name: ranked-story
-          path: output/ranked/best_story.json
+        run: python scripts/list_models.py
