@@ -33,17 +33,22 @@ jobs:
             echo "SECRET FOUND"
           fi
 
-      - name: Show gemini_test.py
-        run: |
-          echo "===== gemini_test.py ====="
-          cat scripts/gemini_test.py
-          echo "=========================="
-
       - name: Collect News
         run: python scripts/news_collector.py
 
-      - name: Upload News JSON
+      - name: Rank News
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/news_ranker.py
+
+      - name: Upload Collected News
         uses: actions/upload-artifact@v4
         with:
           name: collected-news
           path: output/news/news.json
+
+      - name: Upload Ranked Story
+        uses: actions/upload-artifact@v4
+        with:
+          name: ranked-story
+          path: output/ranked/best_story.json
