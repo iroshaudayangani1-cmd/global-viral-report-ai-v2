@@ -54,6 +54,11 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python scripts/article_writer.py
 
+      - name: Generate SEO
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python scripts/seo_generator.py
+
       - name: Upload Collected News
         uses: actions/upload-artifact@v4
         with:
@@ -71,3 +76,9 @@ jobs:
         with:
           name: article
           path: output/article/article.json
+
+      - name: Upload SEO
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo
+          path: output/seo/seo.json
