@@ -1,51 +1,53 @@
-import json
 import os
-
-print("=" * 40)
-print("CONTENT GENERATOR STARTED")
-print("=" * 40)
-
-# -----------------------------
-# Load collected news
-# -----------------------------
+import json
+import time
+from google import genai
 from bs4 import BeautifulSoup
-news_file = "output/news/news.json"
 
-if not os.path.exists(news_file):
-    raise Exception("news.json not found")
-
-with open(news_file, "r", encoding="utf-8") as f:
-    news = json.load(f)
-
-if len(news) == 0:
-    raise Exception("No news articles found")
-
-# Temporary: use the first article
-story = news[0]
-
-print()
-print("Selected Story")
-print("-------------------------")
-print(story["title"])
-
-print()
-print("Source:")
-print(story.get("source", "Unknown"))
-
-print()
-print("URL:")
-print(story.get("link", "No URL"))
-
-raw_summary = story.get("summary", "")
-
-clean_summary = BeautifulSoup(raw_summary, "html.parser").get_text(
-    separator=" ",
-    strip=True
+from config import (
+    GEMINI_MODELS,
+    MAX_RETRIES,
+    RETRY_DELAY,
 )
 
-print()
-print("Clean Summary:")
-print(clean_summary)
+from scripts.utils import (
+    save_json,
+    load_json,
+)
 
-print()
-print("Loaded successfully.")
+from scripts.logger import (
+    title,
+    success,
+    info,
+    warning,
+)
+
+title("GLOBAL VIRAL CONTENT GENERATOR")
+
+# ----------------------------------
+# Gemini API
+# ----------------------------------
+
+api_key = os.getenv("GEMINI_API_KEY")
+
+if not api_key:
+    raise Exception("GEMINI_API_KEY not found.")
+
+client = genai.Client(api_key=api_key)
+
+success("Gemini initialized.")
+
+# ----------------------------------
+# Load News
+# ----------------------------------
+
+NEWS_FILE = "output/news/news.json"
+
+if not os.path.exists(NEWS_FILE):
+    raise Exception("news.json not found.")
+
+news = load_json(NEWS_FILE)
+
+news = news[:20]
+
+info(f"Loaded {len(news)} news stories.")
