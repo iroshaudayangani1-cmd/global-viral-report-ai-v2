@@ -1,20 +1,22 @@
-import os
 import json
+import os
 import feedparser
 
-RSS_FEEDS = {
-    "Google World": "https://news.google.com/rss",
-    "BBC World": "https://feeds.bbci.co.uk/news/world/rss.xml",
-    "Reuters World": "https://feeds.reuters.com/Reuters/worldNews",
-    "AP News": "https://apnews.com/rss"
-}
+from config import (
+    RSS_FEEDS,
+    NEWS_DIR,
+    HEADLINES_FILE,
+)
 
-OUTPUT_DIR = "output/news"
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, "news.json")
+print("=" * 60)
+print("GLOBAL VIRAL REPORT AI")
+print("NEWS COLLECTOR")
+print("=" * 60)
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(NEWS_DIR, exist_ok=True)
 
 articles = []
+seen_links = set()
 
 for source, url in RSS_FEEDS.items():
 
@@ -22,18 +24,47 @@ for source, url in RSS_FEEDS.items():
 
     feed = feedparser.parse(url)
 
-    for entry in feed.entries[:20]:
+    if not feed.entries:
+        print(f"No articles found from {source}")
+        continue
+
+    for entry in feed.entries:
+
+        link = entry.get("link", "").strip()
+
+        if not link:
+            continue
+
+        if link in seen_links:
+            continue
+
+        seen_links.add(link)
 
         articles.append({
             "source": source,
-            "title": entry.get("title", ""),
-            "link": entry.get("link", ""),
+            "title": entry.get("title", "").strip(),
+            "link": link,
             "published": entry.get("published", ""),
             "summary": entry.get("summary", "")
         })
 
-with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-    json.dump(articles, f, indent=4, ensure_ascii=False)
+articles.sort(key=lambda x: x["title"])
 
-print(f"\nCollected {len(articles)} articles")
-print(f"Saved to {OUTPUT_FILE}")
+with open(
+    HEADLINES_FILE,
+    "w",
+    encoding="utf-8"
+) as f:
+
+    json.dump(
+        articles,
+        f,
+        indent=4,
+        ensure_ascii=False
+    )
+
+print()
+print("=" * 60)
+print(f"Collected {len(articles)} unique articles.")
+print(f"Saved to {HEADLINES_FILE}")
+print("=" * 60)
