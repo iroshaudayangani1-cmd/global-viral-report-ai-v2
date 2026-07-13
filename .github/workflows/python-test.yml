@@ -44,22 +44,6 @@ jobs:
       - name: Collect News
         run: python scripts/news_collector.py
 
-      # TEMPORARILY DISABLED
-      # - name: Rank News
-      #   env:
-      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      #   run: python scripts/news_ranker.py
-
-      # - name: Write Article
-      #   env:
-      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      #   run: python scripts/article_writer.py
-
-      # - name: Generate SEO
-      #   env:
-      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-      #   run: python scripts/seo_generator.py
-
       - name: Content Generator
         run: python scripts/content_generator.py
 
