@@ -1,26 +1,31 @@
-# ===========================
-# Global Viral Report AI v3
-# Configuration
-# ===========================
+import os
 
-# Gemini models (used in order)
-GEMINI_MODELS = [
-    "gemini-3.5-flash",
-    "gemini-flash-latest",
-    "gemini-2.5-flash",
-    "gemini-2.0-flash"
-]
+# ==========================
+# Gemini
+# ==========================
 
-# Retry settings
-MAX_RETRIES = 3
-RETRY_DELAY = 10
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Blog
-BLOG_LANGUAGE = "English"
+MODEL = "gemini-2.5-flash"
 
-TARGET_COUNTRIES = [
-    "USA",
-    "UK"
-]
+# ==========================
+# RSS Sources
+# ==========================
 
-ARTICLE_WORDS = 1000
+RSS_FEEDS = {
+    "Google World": "https://news.google.com/rss",
+    "BBC World": "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "Reuters World": "https://feeds.reuters.com/Reuters/worldNews",
+    "AP News": "https://apnews.com/rss",
+    "CNN": "http://rss.cnn.com/rss/edition.rss"
+}
+
+# ==========================
+# Output folders
+# ==========================
+
+NEWS_DIR = "output/news"
+GENERATED_DIR = "output/generated"
+
+HEADLINES_FILE = f"{NEWS_DIR}/headlines.json"
+CONTENT_FILE = f"{GENERATED_DIR}/content.json"
