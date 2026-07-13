@@ -2,7 +2,7 @@ import os
 import json
 import time
 from google import genai
-
+from bs4 import BeautifulSoup
 # ----------------------------
 # Gemini API
 # ----------------------------
