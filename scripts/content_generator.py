@@ -8,7 +8,7 @@ print("=" * 40)
 # -----------------------------
 # Load collected news
 # -----------------------------
-
+from bs4 import BeautifulSoup
 news_file = "output/news/news.json"
 
 if not os.path.exists(news_file):
