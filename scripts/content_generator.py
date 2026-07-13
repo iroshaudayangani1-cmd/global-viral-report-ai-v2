@@ -2,55 +2,64 @@ import os
 import json
 import time
 from google import genai
-from bs4 import BeautifulSoup
-import sys
-import os
+from google.genai import types
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import (
-    GEMINI_MODELS,
-    MAX_RETRIES,
-    RETRY_DELAY,
-)
+# =====================================================
+# CONFIGURATION
+# =====================================================
 
-from scripts.utils import (
-    save_json,
-    load_json,
-)
+INPUT_FILE = "output/news/headlines.json"
 
-from scripts.logger import (
-    title,
-    success,
-    info,
-    warning,
-)
+OUTPUT_DIR = "output/generated"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "content.json")
 
-title("GLOBAL VIRAL CONTENT GENERATOR")
+MODEL_NAME = "gemini-2.5-flash"
 
-# ----------------------------------
-# Gemini API
-# ----------------------------------
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-api_key = os.getenv("GEMINI_API_KEY")
+print("=" * 60)
+print("GLOBAL VIRAL REPORT AI")
+print("Unified Content Generator")
+print("=" * 60)
 
-if not api_key:
+# =====================================================
+# GEMINI CLIENT
+# =====================================================
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
     raise Exception("GEMINI_API_KEY not found.")
 
-client = genai.Client(api_key=api_key)
+client = genai.Client(api_key=API_KEY)
 
-success("Gemini initialized.")
+# =====================================================
+# LOAD HEADLINES
+# =====================================================
 
-# ----------------------------------
-# Load News
-# ----------------------------------
+if not os.path.exists(INPUT_FILE):
+    raise Exception(f"{INPUT_FILE} not found.")
 
-NEWS_FILE = "output/news/news.json"
+with open(INPUT_FILE, "r", encoding="utf-8") as f:
+    headlines = json.load(f)
 
-if not os.path.exists(NEWS_FILE):
-    raise Exception("news.json not found.")
+if len(headlines) == 0:
+    raise Exception("No headlines found.")
 
-news = load_json(NEWS_FILE)
+print(f"Loaded {len(headlines)} headlines.")
 
-news = news[:20]
+# =====================================================
+# BUILD HEADLINE LIST
+# =====================================================
 
-info(f"Loaded {len(news)} news stories.")
+headline_text = ""
+
+for index, item in enumerate(headlines, start=1):
+
+    headline_text += (
+        f"{index}. {item.get('title','')}\n"
+        f"Source: {item.get('source','')}\n"
+        f"URL: {item.get('link','')}\n\n"
+    )
+
+print("Headline list prepared.")
