@@ -44,20 +44,21 @@ jobs:
       - name: Collect News
         run: python scripts/news_collector.py
 
-      - name: Rank News
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/news_ranker.py
+      # TEMPORARILY DISABLED
+      # - name: Rank News
+      #   env:
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: python scripts/news_ranker.py
 
-      - name: Write Article
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/article_writer.py
+      # - name: Write Article
+      #   env:
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: python scripts/article_writer.py
 
-      - name: Generate SEO
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/seo_generator.py
+      # - name: Generate SEO
+      #   env:
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: python scripts/seo_generator.py
 
       - name: Content Generator
         run: python scripts/content_generator.py
@@ -67,21 +68,3 @@ jobs:
         with:
           name: collected-news
           path: output/news/news.json
-
-      - name: Upload Ranked Story
-        uses: actions/upload-artifact@v4
-        with:
-          name: ranked-story
-          path: output/ranked/best_story.json
-
-      - name: Upload Article
-        uses: actions/upload-artifact@v4
-        with:
-          name: article
-          path: output/article/article.json
-
-      - name: Upload SEO
-        uses: actions/upload-artifact@v4
-        with:
-          name: seo
-          path: output/seo/seo.json
