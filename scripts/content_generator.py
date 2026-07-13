@@ -1,1 +1,3 @@
-print("Content Generator Started")
+print("===================================")
+print("CONTENT GENERATOR STARTED")
+print("===================================")
