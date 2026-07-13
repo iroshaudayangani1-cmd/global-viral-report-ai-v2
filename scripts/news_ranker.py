@@ -107,6 +107,11 @@ story_number = result["selected_story"]
 
 best_story = news[story_number - 1]
 
+# Clean HTML summary
+if "summary" in best_story:
+    soup = BeautifulSoup(best_story["summary"], "html.parser")
+    best_story["summary"] = soup.get_text(" ", strip=True)
+
 best_story["ai_score"] = result["score"]
 best_story["ai_reason"] = result["reason"]
 
