@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from google import genai
 
 # ----------------------------
@@ -54,13 +55,47 @@ Headlines:
 
 {chr(10).join(headlines)}
 """
-print("USING MODEL: gemini-2.5-flash")
-response = client.models.generate_content(
-    model="gemini-flash-latest",
-    contents=prompt,
-)
 
-# Clean possible markdown
+# ----------------------------
+# Try multiple Gemini models
+# ----------------------------
+
+MODELS = [
+    "gemini-3.5-flash",
+    "gemini-flash-latest",
+    "gemini-2.0-flash",
+]
+
+response = None
+
+for model in MODELS:
+    print(f"Trying model: {model}")
+
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+            )
+            print(f"Success with {model}")
+            break
+
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed: {e}")
+
+            if attempt < 2:
+                time.sleep(10)
+
+    if response:
+        break
+
+if response is None:
+    raise Exception("All Gemini models failed.")
+
+# ----------------------------
+# Parse AI response
+# ----------------------------
+
 text = response.text.strip()
 
 if text.startswith("```json"):
@@ -74,6 +109,10 @@ best_story = news[story_number - 1]
 
 best_story["ai_score"] = result["score"]
 best_story["ai_reason"] = result["reason"]
+
+# ----------------------------
+# Save result
+# ----------------------------
 
 os.makedirs("output/ranked", exist_ok=True)
 
