@@ -3,7 +3,10 @@ import json
 import time
 from google import genai
 from bs4 import BeautifulSoup
+import sys
+import os
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import (
     GEMINI_MODELS,
     MAX_RETRIES,
