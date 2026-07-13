@@ -36,9 +36,16 @@ print()
 print("URL:")
 print(story.get("link", "No URL"))
 
+raw_summary = story.get("summary", "")
+
+clean_summary = BeautifulSoup(raw_summary, "html.parser").get_text(
+    separator=" ",
+    strip=True
+)
+
 print()
-print("Summary:")
-print(story.get("summary", "No summary available"))
+print("Clean Summary:")
+print(clean_summary)
 
 print()
 print("Loaded successfully.")
