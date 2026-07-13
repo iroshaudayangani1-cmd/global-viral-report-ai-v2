@@ -6,16 +6,22 @@ print("CONTENT GENERATOR STARTED")
 print("=" * 40)
 
 # -----------------------------
-# Load ranked story
+# Load collected news
 # -----------------------------
 
-story_file = "output/ranked/best_story.json"
+news_file = "output/news/news.json"
 
-if not os.path.exists(story_file):
-    raise Exception("best_story.json not found")
+if not os.path.exists(news_file):
+    raise Exception("news.json not found")
 
-with open(story_file, "r", encoding="utf-8") as f:
-    story = json.load(f)
+with open(news_file, "r", encoding="utf-8") as f:
+    news = json.load(f)
+
+if len(news) == 0:
+    raise Exception("No news articles found")
+
+# Temporary: use the first article
+story = news[0]
 
 print()
 print("Selected Story")
@@ -31,12 +37,8 @@ print("URL:")
 print(story.get("link", "No URL"))
 
 print()
-print("AI Score:")
-print(story.get("ai_score"))
-
-print()
-print("Reason:")
-print(story.get("ai_reason"))
+print("Summary:")
+print(story.get("summary", "No summary available"))
 
 print()
 print("Loaded successfully.")
