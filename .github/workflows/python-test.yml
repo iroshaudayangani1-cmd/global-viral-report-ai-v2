@@ -31,7 +31,6 @@ jobs:
             exit 1
           else
             echo "SECRET FOUND"
-          fi
 
       - name: Show Repository Structure
         run: |
@@ -53,7 +52,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: collected-news
-          path: output/news/headlines.json
+          path: output/news/news.json
 
       - name: Upload Generated Content
         uses: actions/upload-artifact@v4
