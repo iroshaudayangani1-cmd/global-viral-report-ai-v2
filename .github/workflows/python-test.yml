@@ -22,15 +22,16 @@ jobs:
           pip uninstall -y google-generativeai || true
           pip install --no-cache-dir -r requirements.txt
 
-      - name: Check Secret
+      - name: Check GEMINI_API_KEY
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ -z "$GEMINI_API_KEY" ]; then
-            echo "SECRET NOT FOUND"
+            echo "❌ GEMINI_API_KEY secret NOT FOUND"
             exit 1
           else
-            echo "SECRET FOUND"
+            echo "✅ GEMINI_API_KEY secret FOUND"
+          fi
 
       - name: Show Repository Structure
         run: |
@@ -39,23 +40,38 @@ jobs:
           echo ""
           echo "===== SCRIPTS ====="
           ls -la scripts
+          echo ""
+          echo "===== OUTPUT ====="
+          mkdir -p output/news
+          mkdir -p output/generated
+          ls -la output
+          ls -la output/news
+          ls -la output/generated
 
-      - name: Collect News
-        run: python scripts/news_collector.py
+      - name: Run News Collector
+        run: |
+          python scripts/news_collector.py
 
-      - name: Generate AI Content
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python scripts/content_generator.py
+      - name: Verify News Output
+        run: |
+          echo "===== NEWS OUTPUT ====="
+          ls -la output/news
 
-      - name: Upload Collected News
+      - name: Upload News Files
         uses: actions/upload-artifact@v4
         with:
           name: collected-news
-          path: output/news/news.json
+          path: output/news/
 
-      - name: Upload Generated Content
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-content
-          path: output/generated/content.json
+      # Enable this after content_generator.py is completed
+      # - name: Run Content Generator
+      #   env:
+      #     GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      #   run: |
+      #     python scripts/content_generator.py
+
+      # - name: Upload Generated Content
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: generated-content
+      #     path: output/generated/
